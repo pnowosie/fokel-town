@@ -19,6 +19,7 @@ const (
 
 type application struct {
 	logger    hclog.Logger
+	trie      Trie
 	startTime int64
 }
 
@@ -29,15 +30,19 @@ func main() {
 	})
 	appLogger.Info(ServiceName, "version", Version)
 
+	// HTTP server configuration
 	host := flag.String("host", HOST, "host to listen on")
 	port := flag.Int("port", PORT, "port to listen on")
 	flag.Parse()
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 
+	// Run the application
+	trie := &MapIsNotATrie{}
+
 	appLogger.Info("Starting server", "addr", addr)
-	http.ListenAndServe(addr, NewApp(appLogger).Routes())
+	http.ListenAndServe(addr, NewApp(appLogger, trie).Routes())
 }
 
-func NewApp(logger hclog.Logger) *application {
-	return &application{logger: logger, startTime: time.Now().Unix()}
+func NewApp(logger hclog.Logger, trie Trie) *application {
+	return &application{logger: logger, trie: trie, startTime: time.Now().Unix()}
 }
