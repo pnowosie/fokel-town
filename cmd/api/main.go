@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"net/http"
@@ -18,32 +17,27 @@ const (
 	PORT    = 4000
 )
 
+type application struct {
+	logger    hclog.Logger
+	startTime int64
+}
+
 func main() {
 	appLogger := hclog.New(&hclog.LoggerOptions{
 		Name:  ServiceName,
 		Level: hclog.LevelFromString("DEBUG"),
 	})
-	appLogger.Info("Simple HTTP service")
+	appLogger.Info(ServiceName, "version", Version)
 
 	host := flag.String("host", HOST, "host to listen on")
 	port := flag.Int("port", PORT, "port to listen on")
 	flag.Parse()
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 
-	startTime := time.Now().Unix()
 	appLogger.Info("Starting server", "addr", addr)
-	mux := http.NewServeMux()
-	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		response, _ := json.Marshal(ApiVersion{ServiceName, Version, time.Now().Unix() - startTime})
-		w.Write(response)
-	})
-
-	http.ListenAndServe(addr, mux)
+	http.ListenAndServe(addr, NewApp(appLogger).Routes())
 }
 
-type ApiVersion struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
-	UpTime  int64  `json:"uptime"`
+func NewApp(logger hclog.Logger) *application {
+	return &application{logger: logger, startTime: time.Now().Unix()}
 }

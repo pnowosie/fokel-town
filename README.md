@@ -30,7 +30,7 @@ Without arguments, service will start listening on `localhost:4000`.
 ### `GET /health`
 
 ```bash
-http -b :4000/health | jq 
+http -b :4000/v0/health | jq 
 ```
 
 **Response:**
