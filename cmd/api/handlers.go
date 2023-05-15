@@ -7,7 +7,6 @@ import (
 )
 
 func (app *application) HealthCheck(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	response, _ := json.Marshal(apiVersion{ServiceName, Version, time.Now().Unix() - app.startTime})
 	w.Write(response)
 }
