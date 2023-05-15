@@ -12,3 +12,33 @@ Write a Go API service that allows user registration. Each user will have a uniq
 2. Develop an API endpoint that enables the registration of a new user. The endpoint should receive user data (identifier, first name, last name) and store it in the in-memory Merkle Trie.
 
 3. Implement an API endpoint that allows retrieving user data based on their identifier. The endpoint should search the in-memory Merkle Trie to find the user data and return it as the API response.
+
+
+## How to run
+
+==TODO==
+
+Program accepts following command line arguments:
+- host - host to listen on, default is `localhost`
+- port - port to listen on, default is `4000`
+
+Without arguments, service will start listening on `localhost:4000`.
+
+
+## Exposed endpoints
+
+### `GET /health`
+
+```bash
+http -b :4000/health | jq 
+```
+
+**Response:**
+
+```json
+{
+  "name": "merkle-service",
+  "version": "0.0.1",
+  "uptime": 620
+}
+```
