@@ -23,13 +23,13 @@ func TestDummyStorage(t *testing.T) {
 
 func TestUserDataValidation(t *testing.T) {
 	validUser := UserData{"00aa00", "John", "Doe"}
-	assert.True(t, validUser.Validate())
+	assert.True(t, validUser.IsValid())
 
 	invalidShorter := UserData{"aa00", "John", "Doe"}
-	assert.False(t, invalidShorter.Validate())
+	assert.False(t, invalidShorter.IsValid())
 
 	invalidLonger := UserData{"1234567", "John", "Doe"}
-	assert.False(t, invalidLonger.Validate())
+	assert.False(t, invalidLonger.IsValid())
 }
 
 func TestUserHashCalculation(t *testing.T) {

@@ -37,7 +37,7 @@ func main() {
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 
 	// Run the application
-	trie := &MapIsNotATrie{}
+	trie := &ThreadSafeTrie{Trie: &MapIsNotATrie{}}
 
 	appLogger.Info("Starting server", "addr", addr)
 	http.ListenAndServe(addr, NewApp(appLogger, trie).Routes())

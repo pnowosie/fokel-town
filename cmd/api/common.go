@@ -22,8 +22,8 @@ type UserData struct {
 	LastName string `json:"lastname"`
 }
 
-// Validate checks only Id is a valid hex string.
-func (ud *UserData) Validate() bool {
+// IsValid checks only Id is a valid hex string.
+func (ud *UserData) IsValid() bool {
 	bytes, err := hex.DecodeString(ud.Id)
 	return err == nil && len(bytes) == 6/2
 }
