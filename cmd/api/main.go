@@ -43,6 +43,6 @@ func main() {
 }
 
 func newApp(logger hclog.Logger) *application {
-	trie := &internal.ThreadSafeTrie{Trie: &internal.MapIsNotATrie{}}
+	trie := &internal.ThreadSafeTrie{Trie: &internal.MerkleTrie{}}
 	return &application{logger: logger, trie: trie, startTime: time.Now().Unix()}
 }

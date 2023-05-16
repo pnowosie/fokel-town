@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	ErrNotFound     = errors.New("key not found")
-	ErrAlreadyExist = errors.New("key already exists")
+	ErrNotFound      = errors.New("key not found")
+	ErrAlreadyExists = errors.New("key already exists")
 )
 
 type Trie interface {
@@ -68,7 +68,7 @@ func (m *MapIsNotATrie) Put(key string, value UserData) error {
 
 	_, ok := m.data[key]
 	if ok {
-		return ErrAlreadyExist
+		return ErrAlreadyExists
 	}
 	m.data[key] = value
 	return nil

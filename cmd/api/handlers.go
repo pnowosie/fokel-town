@@ -76,7 +76,7 @@ func (app *application) PutUser(w http.ResponseWriter, r *http.Request) {
 
 	err = app.trie.Put(user.Id, user)
 	if err != nil {
-		if err == internal.ErrAlreadyExist {
+		if err == internal.ErrAlreadyExists {
 			app.logger.Warn("user already exist", "user", user)
 			http.Error(w, fmt.Sprintf("already exist /v0/user/%s", user.Id), http.StatusFound)
 			return

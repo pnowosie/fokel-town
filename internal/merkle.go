@@ -66,7 +66,7 @@ func (ln *LeafNode) putNode(key string, value UserData) (merkleTreeNode, error) 
 	}
 
 	if ln.Key == key {
-		return nil, ErrAlreadyExist
+		return nil, ErrAlreadyExists
 	}
 
 	prefix, i := longestCommonPrefix(key, ln.Key)
@@ -117,8 +117,8 @@ func (bn *BranchNode) Root() Hash {
 }
 
 func (bn *BranchNode) Get(key string) (UserData, error) {
-	if key == bn.PathPrefix {
-		panic("sanity check: this supposed to be a leaf node")
+	if bn == nil {
+		return UserData{}, ErrNotFound
 	}
 
 	if !strings.HasPrefix(key, bn.PathPrefix) {
