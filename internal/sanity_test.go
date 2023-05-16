@@ -41,7 +41,7 @@ func TestUserHashCalculation(t *testing.T) {
 }
 
 func TestThreadSafeTrieAddMany(t *testing.T) {
-	trie := ThreadSafeTrie{Trie: &MapIsNotATrie{}}
+	trie := ThreadSafeTrie{Trie: &MerkleTrie{}}
 	var waitGroup sync.WaitGroup
 
 	for i := 0; i < 3; i++ {
@@ -59,7 +59,7 @@ func TestThreadSafeTrieAddMany(t *testing.T) {
 
 	waitGroup.Wait()
 
-	assert.Equal(t, 3*1000, len(trie.Trie.(*MapIsNotATrie).data))
+	assert.Equal(t, 3*1000, trie.Trie.(Countable).Count())
 
 	for i := 0; i < 3; i++ {
 		for _, idx := range []int{0, 501, 999} {

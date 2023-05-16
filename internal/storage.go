@@ -16,6 +16,11 @@ type Trie interface {
 	Put(key string, value UserData) error
 }
 
+type Countable interface {
+	// Count returns number of nodes in the trie. Not necessary for the task, but useful for testing.
+	Count() int
+}
+
 var _ Trie = (*ThreadSafeTrie)(nil)
 
 // ThreadSafeTrie implements thread synchronization around in-memory trie.
@@ -72,4 +77,8 @@ func (m *MapIsNotATrie) Put(key string, value UserData) error {
 	}
 	m.data[key] = value
 	return nil
+}
+
+func (m *MapIsNotATrie) Count() int {
+	return len(m.data)
 }

@@ -9,7 +9,8 @@ import (
 var _ Trie = (*MerkleTrie)(nil)
 
 type MerkleTrie struct {
-	RootNode *BranchNode
+	RootNode  *BranchNode
+	elemCount int
 }
 
 func (m *MerkleTrie) Root() Hash {
@@ -25,7 +26,16 @@ func (m *MerkleTrie) Put(key string, value UserData) error {
 		m.RootNode = &BranchNode{Children: [16]merkleTreeNode{}}
 	}
 
-	return m.RootNode.Put(key, value)
+	if err := m.RootNode.Put(key, value); err != nil {
+		return err
+	}
+
+	m.elemCount++
+	return nil
+}
+
+func (m *MerkleTrie) Count() int {
+	return m.elemCount
 }
 
 type merkleTreeNode interface {
