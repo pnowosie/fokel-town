@@ -17,6 +17,7 @@ func TestRootOnEmptyTrie(t *testing.T) {
 }
 
 func MakeTrieByHand() Trie {
+	_ = `
 	// keys := [
 	// 	"001a00",
 	// 	"001a01",
@@ -26,7 +27,7 @@ func MakeTrieByHand() Trie {
 	// Prefix "001ab"
 	var _001ab = &BranchNode{
 		PathPrefix: "001ab",
-		Children:   [16]Trie{},
+		Children:   [16]merkleTreeNode{},
 	}
 	_001ab.Children[10] = &LeafNode{
 		Key: "001aba", Value: UserData{Id: "001aba"},
@@ -38,7 +39,7 @@ func MakeTrieByHand() Trie {
 	// Prefix "001ab"
 	var _001a0 = &BranchNode{
 		PathPrefix: "001a0",
-		Children:   [16]Trie{},
+		Children:   [16]merkleTreeNode{},
 	}
 	_001a0.Children[0] = &LeafNode{
 		Key: "001a00", Value: UserData{Id: "001a00"},
@@ -50,17 +51,23 @@ func MakeTrieByHand() Trie {
 	// Prefix "001a"
 	var _001a = &BranchNode{
 		PathPrefix: "001a",
-		Children:   [16]Trie{},
+		Children:   [16]merkleTreeNode{},
 	}
 	_001a.Children[0] = _001a0
 	_001a.Children[11] = _001ab
 
 	var root = &BranchNode{
 		PathPrefix: "",
-		Children:   [16]Trie{_001a},
+		Children:   [16]merkleTreeNode{_001a},
 	}
+`
+	trie := &MerkleTrie{}
+	trie.Put("001a00", UserData{Id: "001a00"})
+	trie.Put("001a01", UserData{Id: "001a01"})
+	trie.Put("001aba", UserData{Id: "001aba"})
+	trie.Put("001abb", UserData{Id: "001abb"})
 
-	return &MerkleTrie{RootNode: root}
+	return trie
 }
 
 func TestSearchingOnMerkle(t *testing.T) {
@@ -72,6 +79,14 @@ func TestSearchingOnMerkle(t *testing.T) {
 		"Successful 001a00": {
 			keyToFind:     "001a00",
 			expectedValue: UserData{Id: "001a00"},
+		},
+		"Successful 001a01": {
+			keyToFind:     "001a01",
+			expectedValue: UserData{Id: "001a01"},
+		},
+		"Successful 001aba": {
+			keyToFind:     "001aba",
+			expectedValue: UserData{Id: "001aba"},
 		},
 		"Successful 001abb": {
 			keyToFind:     "001abb",
@@ -108,4 +123,16 @@ func TestRootCalcOnMerkle(t *testing.T) {
 	expectedHash = "6370101c0992860d2b0b6b9c604ad7fece1728decd34e94817aee12e4c264531"
 	trie := MakeTrieByHand()
 	assert.Equal(t, expectedHash, trie.Root().String())
+}
+
+func TestPutMerkle(t *testing.T) {
+	trie := &MerkleTrie{}
+
+	key := "001a00"
+	err := trie.Put(key, UserData{Id: key})
+	assert.NoError(t, err)
+
+	userData, err := trie.Get(key)
+	assert.NoError(t, err)
+	assert.Equal(t, UserData{Id: key}, userData)
 }
