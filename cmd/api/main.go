@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-hclog"
+	"github.com/pnowosie/fokeltown-merkle/internal"
 )
 
 const (
@@ -19,7 +20,7 @@ const (
 
 type application struct {
 	logger    hclog.Logger
-	trie      Trie
+	trie      internal.Trie
 	startTime int64
 }
 
@@ -37,12 +38,12 @@ func main() {
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 
 	// Run the application
-	trie := &ThreadSafeTrie{Trie: &MapIsNotATrie{}}
 
 	appLogger.Info("Starting server", "addr", addr)
-	http.ListenAndServe(addr, NewApp(appLogger, trie).Routes())
+	http.ListenAndServe(addr, newApp(appLogger).Routes())
 }
 
-func NewApp(logger hclog.Logger, trie Trie) *application {
+func newApp(logger hclog.Logger) *application {
+	trie := &internal.ThreadSafeTrie{Trie: &internal.MapIsNotATrie{}}
 	return &application{logger: logger, trie: trie, startTime: time.Now().Unix()}
 }

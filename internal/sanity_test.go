@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ func TestDummyStorage(t *testing.T) {
 	m1 := MapIsNotATrie{}
 
 	_, err := m1.Get("00aa00")
-	assert.Equal(t, errNotFound, err)
+	assert.Equal(t, ErrNotFound, err)
 
 	user := UserData{"00aa00", "John", "Doe"}
 	err = m1.Put(user.Id, user)

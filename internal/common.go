@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"crypto/sha256"
@@ -13,7 +13,7 @@ func (h Hash) String() string {
 }
 
 type UserData struct {
-	// Id is 6-nimble hex string. I picked this for simplicity and to better illustrate the idea of a Merkle-Patricia tree.
+	// Id is 6-nibble hex string. I picked this for simplicity and to better illustrate the idea of a Merkle-Patricia tree.
 	// In general Id would be a 32-byte hash of rest of the UserData fields.
 	Id string `json:"id"`
 	// FirstName is arbitrary string.

@@ -7,9 +7,10 @@ import (
 	"time"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/pnowosie/fokeltown-merkle/internal"
 )
 
-func (app *application) HealthCheck(w http.ResponseWriter, r *http.Request) {
+func (app *application) HealthCheck(w http.ResponseWriter, _ *http.Request) {
 	response := apiVersion{
 		Name:     ServiceName,
 		Version:  Version,
@@ -29,7 +30,7 @@ func (app *application) GetUser(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
 
 	userid := params.ByName("id")
-	if (&UserData{Id: userid}).IsValid() == false {
+	if (&internal.UserData{Id: userid}).IsValid() == false {
 		app.logger.Warn("invalid id", "id", userid)
 		http.Error(w, "invalid id", http.StatusBadRequest)
 		return
@@ -37,7 +38,7 @@ func (app *application) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	userData, err := app.trie.Get(userid)
 	if err != nil {
-		if err == errNotFound {
+		if err == internal.ErrNotFound {
 			app.logger.Warn("user not found", "id", userid)
 			http.Error(w, "not found", http.StatusNotFound)
 			return
@@ -58,7 +59,7 @@ func (app *application) GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) PutUser(w http.ResponseWriter, r *http.Request) {
-	user := UserData{}
+	user := internal.UserData{}
 
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
@@ -75,7 +76,7 @@ func (app *application) PutUser(w http.ResponseWriter, r *http.Request) {
 
 	err = app.trie.Put(user.Id, user)
 	if err != nil {
-		if err == errAlreadyExist {
+		if err == internal.ErrAlreadyExist {
 			app.logger.Warn("user already exist", "user", user)
 			http.Error(w, fmt.Sprintf("already exist /v0/user/%s", user.Id), http.StatusFound)
 			return

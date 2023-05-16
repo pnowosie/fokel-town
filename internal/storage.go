@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"errors"
@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	errNotFound     = errors.New("key not found")
-	errAlreadyExist = errors.New("key already exists")
+	ErrNotFound     = errors.New("key not found")
+	ErrAlreadyExist = errors.New("key already exists")
 )
 
 type Trie interface {
@@ -56,7 +56,7 @@ func (m *MapIsNotATrie) Root() Hash {
 func (m *MapIsNotATrie) Get(key string) (UserData, error) {
 	data, ok := m.data[key]
 	if !ok {
-		return UserData{}, errNotFound
+		return UserData{}, ErrNotFound
 	}
 	return data, nil
 }
@@ -68,7 +68,7 @@ func (m *MapIsNotATrie) Put(key string, value UserData) error {
 
 	_, ok := m.data[key]
 	if ok {
-		return errAlreadyExist
+		return ErrAlreadyExist
 	}
 	m.data[key] = value
 	return nil
