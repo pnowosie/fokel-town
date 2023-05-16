@@ -16,7 +16,21 @@ Write a Go API service that allows user registration. Each user will have a uniq
 
 ## How to run
 
-==TODO==
+IF you have `go` language installed, you can run service with following command executed from the project root directory:
+
+```bash
+go run ./cmd/api -host localhost -port 4000
+```
+
+You might want to run all test first:
+
+```bash
+go test -v ./...
+```
+or for the better output:
+```bash
+gotestsum -f testname
+```
 
 Program accepts following command line arguments:
 - host - host to listen on, default is `localhost`
