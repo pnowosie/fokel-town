@@ -4,12 +4,17 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"strings"
 )
 
 type Hash [32]byte
 
 func (h Hash) String() string {
 	return hex.EncodeToString(h[:])
+}
+
+func (h Hash) Bytes() []byte {
+	return h[:]
 }
 
 type UserData struct {
@@ -24,6 +29,7 @@ type UserData struct {
 
 // IsValid checks only Id is a valid hex string.
 func (ud *UserData) IsValid() bool {
+	ud.Id = strings.ToLower(ud.Id)
 	bytes, err := hex.DecodeString(ud.Id)
 	return err == nil && len(bytes) == 6/2
 }

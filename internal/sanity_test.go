@@ -70,3 +70,10 @@ func TestThreadSafeTrieAddMany(t *testing.T) {
 		}
 	}
 }
+
+func TestNibbleToIndex(t *testing.T) {
+	hexChars := "0123456789abcdef"
+	for i := range hexChars {
+		assert.Equal(t, i, nibbleIndex(hexChars[i]))
+	}
+}

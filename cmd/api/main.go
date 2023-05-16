@@ -38,7 +38,6 @@ func main() {
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 
 	// Run the application
-
 	appLogger.Info("Starting server", "addr", addr)
 	http.ListenAndServe(addr, newApp(appLogger).Routes())
 }
