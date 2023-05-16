@@ -94,3 +94,19 @@ No response body
 - `302` - user with given id already exists
 - `400` - invalid user data
 - `500` - internal server error
+
+## Trie implementation notes
+
+The trie implemented in this service is Merkle Patricia Trie, where a variant of Radix trie also delivers cryptographic data authentication.
+
+In my simplified implementation there are 2 types of nodes:
+- _branch node_ - contains array of 16 child nodes, branch or leaf. Array elements correspond to 4-bit nibbles of the key.
+- _leaf node_ - contains a key and a pointer to the user data.
+
+The root node of a trie is Trie-structure itself and has a pointer to the "root" branch node. To safe space and limit trie high branch nodes below the "root" one contains a path _prefix_ which holds a common key substring for all its children. 
+
+**Trie diagram overview**
+![Ptricia trie example](patricia_trie.png "Source: https://www.youtube.com/watch?v=QlawpoK4g5A")
+
+
+I artificially limited key length to 3-bytes hex string, which still enables to store more than 16.7M entries.  This limit is made mainly for demonstration and service usability purposes, and can be easily repealed by changing `UserData.IsValid()` method.
