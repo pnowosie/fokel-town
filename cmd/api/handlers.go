@@ -13,9 +13,9 @@ import (
 func (app *application) HealthCheck(w http.ResponseWriter, _ *http.Request) {
 	response := apiVersion{
 		Name:     ServiceName,
-		Version:  Version,
+		Version:  app.version,
 		UpTime:   time.Now().Unix() - app.startTime,
-		TrieRoot: app.trie.Root().String(),
+		TrieRoot: app.storage.Root().String(),
 	}
 	jsonResponse, err := json.Marshal(response)
 	if err != nil {
@@ -36,7 +36,7 @@ func (app *application) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userData, err := app.trie.Get(userid)
+	userData, err := app.storage.Get(userid)
 	if err != nil {
 		if err == internal.ErrNotFound {
 			app.logger.Warn("user not found", "id", userid)
@@ -44,7 +44,7 @@ func (app *application) GetUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Unspecified error
-		app.logger.Error("trie get returns", "error", err)
+		app.logger.Error("storage get returns", "error", err)
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
@@ -74,7 +74,7 @@ func (app *application) PutUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = app.trie.Put(user.Id, user)
+	err = app.storage.Put(user.Id, user)
 	if err != nil {
 		if err == internal.ErrAlreadyExists {
 			app.logger.Warn("user already exist", "user", user)
@@ -82,7 +82,7 @@ func (app *application) PutUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Unspecified error
-		app.logger.Error("trie get returns", "error", err)
+		app.logger.Error("storage get returns", "error", err)
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}

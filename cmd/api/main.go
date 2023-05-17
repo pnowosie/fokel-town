@@ -18,10 +18,16 @@ const (
 	PORT    = 4000
 )
 
+var (
+	// appSha is populated at containerization
+	appSha = "dev"
+)
+
 type application struct {
 	logger    hclog.Logger
-	trie      internal.Trie
+	storage   internal.Trie
 	startTime int64
+	version   string
 }
 
 func main() {
@@ -44,5 +50,10 @@ func main() {
 
 func newApp(logger hclog.Logger) *application {
 	trie := &internal.ThreadSafeTrie{Trie: &internal.MerkleTrie{}}
-	return &application{logger: logger, trie: trie, startTime: time.Now().Unix()}
+	return &application{
+		logger:    logger,
+		storage:   trie,
+		startTime: time.Now().Unix(),
+		version:   fmt.Sprintf("%s-%s", Version, appSha),
+	}
 }

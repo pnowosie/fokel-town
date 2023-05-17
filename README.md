@@ -16,7 +16,23 @@ Write a Go API service that allows user registration. Each user will have a uniq
 
 ## How to run
 
-IF you have `go` language installed, you can run service with following command executed from the project root directory:
+### Run in docker
+
+Here is how to build an image and run the container:
+```bash
+ GIT_SHA=$(git rev-parse --short HEAD) docker build .\
+    -t merkle-srv:${GIT_SHA} -t merkle-srv:latest
+```
+Tagging with latest isn't the best practice, but it's convenient for local tests.
+
+Once the image is ready, run the container:
+```bash
+docker run --rm -p 4000:4000 merkle-srv
+```
+
+### Build from sources
+
+If you have `go` version `1.19` installed, you can run service with following command executed from the project root directory:
 
 ```bash
 go run ./cmd/api -host localhost -port 4000
