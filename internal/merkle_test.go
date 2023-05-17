@@ -12,60 +12,20 @@ func TestRootOnEmptyTrie(t *testing.T) {
 		emptyBranch Trie = (*BranchNode)(nil)
 	)
 
-	assert.Equal(t, Hash{}, emptyLeaf.Root())
-	assert.Equal(t, Hash{}, emptyBranch.Root())
+	t.Run("Leaf", func(t *testing.T) {
+		assert.Equal(t, Hash{}, emptyLeaf.Root())
+	})
+	t.Run("Branch", func(t *testing.T) {
+		assert.Equal(t, Hash{}, emptyBranch.Root())
+	})
 }
 
-func MakeTrieByHand() Trie {
-	_ = `
-	// keys := [
-	// 	"001a00",
-	// 	"001a01",
-	// 	"001aba",
-	// 	"001abb" ]
-
-	// Prefix "001ab"
-	var _001ab = &BranchNode{
-		PathPrefix: "001ab",
-		Children:   [16]merkleTreeNode{},
-	}
-	_001ab.Children[10] = &LeafNode{
-		Key: "001aba", Value: UserData{Id: "001aba"},
-	}
-	_001ab.Children[11] = &LeafNode{
-		Key: "001abb", Value: UserData{Id: "001abb"},
-	}
-
-	// Prefix "001ab"
-	var _001a0 = &BranchNode{
-		PathPrefix: "001a0",
-		Children:   [16]merkleTreeNode{},
-	}
-	_001a0.Children[0] = &LeafNode{
-		Key: "001a00", Value: UserData{Id: "001a00"},
-	}
-	_001a0.Children[1] = &LeafNode{
-		Key: "001a01", Value: UserData{Id: "001a01"},
-	}
-
-	// Prefix "001a"
-	var _001a = &BranchNode{
-		PathPrefix: "001a",
-		Children:   [16]merkleTreeNode{},
-	}
-	_001a.Children[0] = _001a0
-	_001a.Children[11] = _001ab
-
-	var root = &BranchNode{
-		PathPrefix: "",
-		Children:   [16]merkleTreeNode{_001a},
-	}
-`
+func makeTestTrie(t *testing.T) Trie {
 	trie := &MerkleTrie{}
-	trie.Put("001a00", UserData{Id: "001a00"})
-	trie.Put("001a01", UserData{Id: "001a01"})
-	trie.Put("001aba", UserData{Id: "001aba"})
-	trie.Put("001abb", UserData{Id: "001abb"})
+	assert.NoError(t, trie.Put("001a00", UserData{Id: "001a00"}))
+	assert.NoError(t, trie.Put("001a01", UserData{Id: "001a01"}))
+	assert.NoError(t, trie.Put("001aba", UserData{Id: "001aba"}))
+	assert.NoError(t, trie.Put("001abb", UserData{Id: "001abb"}))
 
 	return trie
 }
@@ -102,7 +62,7 @@ func TestSearchingOnMerkle(t *testing.T) {
 		},
 	}
 
-	trie := MakeTrieByHand()
+	trie := makeTestTrie(t)
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			value, err := trie.Get(test.keyToFind)
@@ -116,13 +76,17 @@ func TestSearchingOnMerkle(t *testing.T) {
 }
 
 func TestRootCalcOnMerkle(t *testing.T) {
-	expectedHash := "0000000000000000000000000000000000000000000000000000000000000000"
-	emptyMerkle := &MerkleTrie{RootNode: nil}
-	assert.Equal(t, expectedHash, emptyMerkle.Root().String())
+	t.Run("Empty trie", func(t *testing.T) {
+		expectedHash := "0000000000000000000000000000000000000000000000000000000000000000"
+		emptyMerkle := &MerkleTrie{RootNode: nil}
+		assert.Equal(t, expectedHash, emptyMerkle.Root().String())
+	})
 
-	expectedHash = "6370101c0992860d2b0b6b9c604ad7fece1728decd34e94817aee12e4c264531"
-	trie := MakeTrieByHand()
-	assert.Equal(t, expectedHash, trie.Root().String())
+	t.Run("Test trie", func(t *testing.T) {
+		expectedHash := "6370101c0992860d2b0b6b9c604ad7fece1728decd34e94817aee12e4c264531"
+		trie := makeTestTrie(t)
+		assert.Equal(t, expectedHash, trie.Root().String())
+	})
 }
 
 func TestPutMerkle(t *testing.T) {

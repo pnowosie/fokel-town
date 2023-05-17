@@ -20,8 +20,8 @@ Write a Go API service that allows user registration. Each user will have a uniq
 
 Here is how to build an image and run the container:
 ```bash
- GIT_SHA=$(git rev-parse --short HEAD) docker build .\
-    -t merkle-srv:${GIT_SHA} -t merkle-srv:latest
+ GIT_SHA=$(git rev-parse --short HEAD)
+ docker build . --progress=plain -t merkle-srv:${GIT_SHA} -t merkle-srv:latest
 ```
 Tagging with latest isn't the best practice, but it's convenient for local tests.
 

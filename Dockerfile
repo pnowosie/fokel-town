@@ -7,6 +7,9 @@ WORKDIR /app
 COPY . .
 RUN go mod download
 
+# Run tests
+RUN go test -v ./...
+
 # Build static image.
 RUN GIT_SHA=$(git rev-parse --short HEAD) && \
     CGO_ENABLED=0 GOARCH=amd64 GOOS=linux \

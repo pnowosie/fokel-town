@@ -45,14 +45,14 @@ func main() {
 
 	// Run the application
 	appLogger.Info("Starting server", "addr", addr)
-	http.ListenAndServe(addr, newApp(appLogger).Routes())
+	merkle := &internal.ThreadSafeTrie{Trie: &internal.MerkleTrie{}}
+	http.ListenAndServe(addr, newApp(appLogger, merkle).Routes())
 }
 
-func newApp(logger hclog.Logger) *application {
-	trie := &internal.ThreadSafeTrie{Trie: &internal.MerkleTrie{}}
+func newApp(logger hclog.Logger, storage internal.Trie) *application {
 	return &application{
 		logger:    logger,
-		storage:   trie,
+		storage:   storage,
 		startTime: time.Now().Unix(),
 		version:   fmt.Sprintf("%s-%s", Version, appSha),
 	}
