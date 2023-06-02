@@ -1,5 +1,12 @@
 # FokelTown: open the source that should stay closed
 
+
+## What is a `FokelTown` anyway?
+
+All started as a home assignment I've done some time ago. The time has passed, I thought I can open source it now.
+It just needed a project name, `FokelTown` isn't the worst choice. It might reflect the real company behind the task.
+
+
 ## Description 
 
 Write a Go API service that allows user registration. Each user will have a unique identifier, first name, and last name. Use an in-memory Merkle Trie to store the user data, eliminating the need for an additional database.
